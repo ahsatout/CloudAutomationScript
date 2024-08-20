@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Function to display usage
-help() {
+usage() {
     echo "Usage: $0 {create|delete|list|upload|download|delete-obj|list-obj} <bucket_name> <file_name|object_key>"
     echo "  create: Create an S3 bucket"
     echo "  delete: Delete an S3 bucket"
@@ -10,7 +10,6 @@ help() {
     echo "  download: Download a file from an S3 bucket"
     echo "  delete-obj: Delete an object from an S3 bucket"
     echo "  list-obj: List all objects in an S3 bucket"
-    exit 1
 }
 
 
@@ -23,7 +22,7 @@ fi
 
 # Check if at least one argument is provided
 if [ $# -lt 1 ]; then
-    help
+    usage
 fi
 
 # Get the operation, bucket name, and file name/object key from arguments
@@ -34,6 +33,9 @@ object_key=$3  # For delete-obj and download, use object_key
 
 # Perform the operation based on the argument
 case $operation in
+    help)
+        usage
+        ;;
     create)
         if [ -z "$bucket_name" ]; then
             echo "Error: bucket_name is required for create operation."
@@ -57,7 +59,7 @@ case $operation in
     upload)
         if [ -z "$bucket_name" ] || [ -z "$file_name" ]; then
             echo "Error: bucket_name and file_name are required for upload operation."
-            help
+            echo "run $0 help"
         fi
         echo "Uploading $file_name to bucket: $bucket_name"
         aws s3 cp "$file_name" s3://"$bucket_name"/
